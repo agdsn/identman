@@ -1,12 +1,17 @@
-import disableAutomock = jest.disableAutomock;
 
-export interface HashResult {
+interface HashResult {
     hash: string;
     salt: string;
 }
 
+export interface HashcashResult {
+     query: string;
+     n: number;
+     salt: string;
+}
+
 function getZerosString(n: number): string {
-  return '0'.repeat(n * 2);
+  return '0'.repeat(n);
 }
 
 async function hashWithSalt(value: string): Promise<HashResult> {
@@ -29,13 +34,18 @@ async function hashWithSalt(value: string): Promise<HashResult> {
     return { hash, salt };
 }
 
-export async function hashCache(query: string, n: number): Promise<HashResult> {
+export async function hashCache(query: string, n: number): Promise<HashcashResult> {
     const leading_zeros = getZerosString(n);
     while (true) {
         const result = await hashWithSalt(query);
 
         if (result.hash.startsWith(leading_zeros)){
-            return result;
+
+            return {
+                query: query,
+                n: n,
+                salt: result.salt,
+            };
         }
     }
 }
