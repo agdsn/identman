@@ -1,4 +1,8 @@
+from json import JSONDecodeError
+
 from flask import render_template, Blueprint, request, redirect, jsonify, current_app
+import json
+from identman.identman.api import check_user
 from identman.identman.helpers import Query
 from identman.identman.csrf import get_token, get_token_csrf
 from identman.identman.decryption import decrypt
@@ -29,9 +33,10 @@ def challenge():
         return jsonify(), 416
     try:
         plain = decrypt(b"Hallo", query.get_query())
+        data = json.load(plain)
     except:
-        return jsonify(), 400
+        return jsonify({"error": "Invalider QR Code"}), 400
 
-
-
-    return
+    if check_user(data):
+        return jsonify(data), 200
+    return jsonify({"error": "Ist kein Aktives Mitglied!"}), 400

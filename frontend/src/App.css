@@ -1,5 +1,8 @@
 .App {
   text-align: center;
+  min-height: 100vh;
+  overflow: hidden;
+  position: relative;
 }
 
 .App-logo {
@@ -15,7 +18,7 @@
 
 .App-header {
   height: 90vh;
-  width: 100vh;
+  width: 90vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -25,6 +28,8 @@
   background-color: #282c34;
   border-radius: 1em;
   padding-top: 1em;
+  box-sizing: border-box;
+
 }
 
 .App-link {
@@ -46,6 +51,15 @@
   background-image: url('../public/wu.jpg');
   background-size: cover;
   background-position: center;
+}
+pre {
+    white-space: pre-wrap;       /* Erhält Zeilenumbrüche */
+    word-wrap: break-word;       /* Bricht lange Wörter um */
+    overflow-x: auto;            /* Scrollbar nur wenn nötig */
+    max-width: 100%;
+    margin: 0;
+    padding: 10px;
+    box-sizing: border-box;
 }
 
 .blur-overlay {
