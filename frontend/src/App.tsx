@@ -42,7 +42,7 @@ function App() {
             console.log(data)
 
 
-            const content = await getAdditionalContent(data.query, data.nhash);
+            const content = await getAdditionalContent(data.query, data.nHash, data.csrfToken);
             console.log(content)
             setAdditionalContent(content);
         } catch (error) {

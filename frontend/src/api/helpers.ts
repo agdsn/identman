@@ -8,6 +8,7 @@ export interface HashcashResult {
      query: string;
      n: number;
      salt: string;
+     csrfToken: string;
 }
 
 function getZerosString(n: number): string {
@@ -34,7 +35,7 @@ async function hashWithSalt(value: string): Promise<HashResult> {
     return { hash, salt };
 }
 
-export async function hashCache(query: string, n: number): Promise<HashcashResult> {
+export async function hashCache(query: string, n: number, csrfToken: string): Promise<HashcashResult> {
     const leading_zeros = getZerosString(n);
     while (true) {
         const result = await hashWithSalt(query);
@@ -45,6 +46,7 @@ export async function hashCache(query: string, n: number): Promise<HashcashResul
                 query: query,
                 n: n,
                 salt: result.salt,
+                csrfToken: csrfToken
             };
         }
     }
