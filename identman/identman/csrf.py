@@ -8,8 +8,8 @@ import threading
 import base64
 
 CSRF_EXIRATION = 30
-MIN_CASH = 4
-MAX_CASH = 5
+MIN_CASH = 2
+MAX_CASH = 4
 s = threading.Semaphore(MAX_CASH)
 logger = logging.getLogger(__name__)
 

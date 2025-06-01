@@ -27,16 +27,18 @@ def challenge():
     request_data = request.get_json()
     query = Query(**request_data)
 
-
-
     if not query.validate():
-        return jsonify(), 416
+        return jsonify({"error": "Nice try!"}), 416
     try:
-        plain = decrypt(b"Hallo", query.get_query())
-        data = json.load(plain)
+        plain = decrypt(current_app.config["SECRET_KEY"], query.get_query())
+        print(plain)
+        data = json.loads(plain)
+    except JSONDecodeError:
+        print("Invalid JSON")
+        return jsonify({"error": "Invalider QR Code"}), 416
     except:
         return jsonify({"error": "Invalider QR Code"}), 400
 
     if check_user(data):
         return jsonify(data), 200
-    return jsonify({"error": "Ist kein Aktives Mitglied!"}), 400
+    return jsonify({"error": "Ist kein Aktives Mitglied der AG DSN!"}), 400
