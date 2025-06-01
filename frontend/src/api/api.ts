@@ -8,8 +8,10 @@ export interface Data {
 }
 
 export interface Validated {
-    error: string;
-    data?: Data;
+    error?: string;
+    fname?: string;
+    name?: string;
+    byear?: number;
 }
 
 export async function getHello(query: string): Promise<Data> {
@@ -40,8 +42,6 @@ export async function getAdditionalContent(query: string, n: number, csrfToken: 
             body: JSON.stringify(result),
         }
     );
-    return {
-        "error": query,
-    }
+    return response.json();
 }
 

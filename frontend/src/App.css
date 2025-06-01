@@ -52,6 +52,14 @@
   background-size: cover;
   background-position: center;
 }
+
+.validated{
+  color: green;
+}
+.error {
+  color: red;
+}
+
 pre {
     white-space: pre-wrap;       /* Erhält Zeilenumbrüche */
     word-wrap: break-word;       /* Bricht lange Wörter um */

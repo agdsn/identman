@@ -3,7 +3,7 @@ import {useSearchParams} from 'react-router-dom';
 import logo from './agdsn_logo_weiß.png';
 import './App.css';
 import './index.css';
-import {getHello, getAdditionalContent, Data} from './api';
+import {getHello, getAdditionalContent, Data, Validated} from './api';
 
 interface LoadingState {
     initialData: boolean;
@@ -33,7 +33,7 @@ function App() {
         contentError: null
     });
     const [initialData, setInitialData] = useState<any>(null);
-    const [additionalContent, setAdditionalContent] = useState<any>(null);
+    const [additionalContent, setAdditionalContent] = useState<Validated>();
     const query = searchParams.get("query");
     console.log(query);
     const loadAdditionalContent = async (data: Data) => {
@@ -97,20 +97,32 @@ function App() {
         return (
 
             <div className="content-container">
-                <div className="initial-data">
-                    <h2>Initial Data:</h2>
-                    {initialData && <pre>{JSON.stringify(initialData, null, 2)}</pre>}
-                </div>
 
                 <div className="additional-content">
-                    <h2>Additional Content:</h2>
+
                     {loading.additionalContent ? (
                         renderLoadingSpinner()
                     ) : errors.contentError ? (
                         <div className="error">{errors.contentError}</div>
                     ) : (
                         additionalContent && (
-                            <pre>{JSON.stringify(additionalContent, null, 2)}</pre>
+                            <pre>
+                                {additionalContent.error ? (
+                                    <pre>
+                                        <h2 className="error">Validierung Fehlgschlagen!</h2>
+                                        <div>{additionalContent.error}</div>
+                                    </pre>
+                                ) : (
+                                    <pre>
+                                        <h2 className="validated">Aktives Mitglied der AG DSN:</h2>
+                                        <div className="daten">
+                                            <div>Name: {additionalContent.fname} {additionalContent.name}</div>
+                                            <div>Geburtsjahr: {additionalContent.byear}</div>
+                                            <div>ist nur gültig mit einen Lichtbildausweis!</div>
+                                        </div>
+                                    </pre>
+                                )}
+                            </pre>
                         )
                     )}
                 </div>
