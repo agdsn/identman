@@ -2,7 +2,7 @@ import numbers
 from cryptography.hazmat.primitives import hashes
 import logging
 
-from identman.identman.csrf import get_token_csrf
+from identman.helper.csrf import get_token_csrf
 
 logger = logging.getLogger(__name__)
 

@@ -1,37 +1,35 @@
 import sys
 from configparser import ConfigParser
 
-from flask import Flask
-from flask_cors import CORS
+#from flask import Flask
+#from flask_cors import CORS
 import os
+from fastapi import FastAPI
+from dotenv import load_dotenv
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi_csrf_protect import CsrfProtect
+
+from identman.helper.settings import settings
+from identman.blueprints import api_router
+
 
 
 
 def create_app():
-    app = Flask(__name__)
-    CORS(app, resources={r"/api/*": {"origins": "*"}})
+    #app = Flask(__name__)
+    #CORS(app, resources={r"/api/*": {"origins": "*"}})
+    app = FastAPI()
+    app.include_router(api_router, prefix="/api")
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=settings.cors_origins,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
 
-    from identman import bp
-    app.register_blueprint(bp)
-    get_config(app)
-    app.crftoken = []
+    @CsrfProtect.load_config
+    def get_csrf_config():
+        return settings.csrf_settings
+
+    #app.register_blueprint(bp)
     return app
-
-def get_config(app):
-    config = ConfigParser()
-    if key := os.environ.get("SECRET_KEY"):
-        app.config["SECRET_KEY"] = key
-    else:
-        sys.exit("there was no SECRET_KEY provided in env")
-
-    if pyc_key := os.environ.get("PYCROFT_BACKEND_KEY"):
-        app.config["PYCROFT_BACKEND_KEY"] = pyc_key
-    else:
-        sys.exit("there was no PYCROFT_BACKEND_KEY in env")
-
-    if pycb := os.environ.get("PYCROFT_BACKEND"):
-        app.config["PYCROFT_BACKEND"] = pycb
-    else:
-        sys.exit("there was no PYCROFT_BACKEND in env")
-
-    return config

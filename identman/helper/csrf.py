@@ -2,14 +2,14 @@ import random
 import datetime
 from math import radians
 
-from flask import current_app
+#from flask import current_app
 import logging
 import threading
 import base64
 
 CSRF_EXIRATION = 30
-MIN_CASH = 2
-MAX_CASH = 4
+MIN_CASH = 3
+MAX_CASH = 5
 s = threading.Semaphore(MAX_CASH)
 logger = logging.getLogger(__name__)
 
