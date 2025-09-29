@@ -25,11 +25,12 @@ class API(ABC):
 class DummyAPI(API):
     def __init__(self, data: List[List[str]]):
         super().__init__("dummy API", "dummy key")
-        self.data = data
+        self._data = data
 
     def check_user(self, data: dict) -> bool:
-        subset = [value for key, value in data.iteritems()]
-        for row in data:
+        print(data)
+        subset = [value for key, value in data.items()]
+        for row in self._data:
             if subset in row:
                 return True
         return False
@@ -41,7 +42,7 @@ class FileAPI(API):
 
     def check_user(self, data):
 
-        subset = [value for key, value in data.iteritems()]
+        subset = [value for key, value in data.items()]
         with open(self.path) as file:
             reader = csv.reader(file)
             for row in reader:

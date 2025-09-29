@@ -2,12 +2,16 @@ import numbers
 from cryptography.hazmat.primitives import hashes
 import logging
 
-from identman.helper.csrf import get_token_csrf
+from fastapi import Depends
+
+from fastapi_csrf_protect import CsrfProtect
+
+from identman.helper import settings
 
 logger = logging.getLogger(__name__)
 
 class Query:
-    def __init__(self, query=None, n=None, salt=None, csrfToken=None, **kwargs):
+    def __init__(self, query=None, n=None, salt="", csrfToken=None, **kwargs):
         self._query = query
         self._n = n
         self._salt = salt
@@ -19,24 +23,18 @@ class Query:
 
         if not (isinstance(self._n, numbers.Number)):
             return False
-
-        try:
-            bytes.fromhex(self._salt)
-        except ValueError:
-            return False
-        token = get_token_csrf(self._csrfToken)
-        if not token:
-            return False
-        n = token.get_n()
-        print(n)
+        print(f"Validating query: {self._query} salt {self._salt}")
         digest = hashes.Hash(hashes.SHA512())
         digest.update(self._query.encode())
+        digest.update(self.get_token().encode())
         digest.update(self.get_salt())
         digest = digest.finalize()
         hash = digest.hex()
 
-        cash = hash[:self._n].replace('0' * n, "")
+        cash = hash[:self._n].replace('0' *  settings.leading_zeros, "")
+        print(cash)
         if len(cash) > 0:
+            print("Chache")
             return False
         return True
 
@@ -46,6 +44,6 @@ class Query:
     def get_query(self) -> str:
         return self._query
 
-    def get_token(self) -> int:
+    def get_token(self) -> str:
         return self._csrfToken
 
