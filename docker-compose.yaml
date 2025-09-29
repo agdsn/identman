@@ -1,0 +1,25 @@
+services:
+  identman:
+    build:
+      context: .
+      dockerfile: docker/fastapi/Dockerfile
+    image: identman
+    ports:
+      - "5000:5000"
+    networks:
+      - identnet
+
+  frontend:
+    build:
+      context: .
+      dockerfile: docker/frontend/Dockerfile
+    image: identman-frontend
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      - identnet
+
+networks:
+  identnet:
+    driver: bridge
