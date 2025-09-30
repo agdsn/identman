@@ -12,6 +12,9 @@ USER frontend
 
 WORKDIR /opt/identman
 
+ARG REACT_APP_API
+ENV REACT_APP_API=$REACT_APP_API
+
 RUN npm run build
 
 FROM nginx:alpine
