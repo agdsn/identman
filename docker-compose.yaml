@@ -4,6 +4,14 @@ services:
       context: .
       dockerfile: docker/fastapi/Dockerfile
     image: identman
+    environment:
+      CONFIG: /opt/identman/config/config.yaml
+      CORS_ORIGIN: http://frontend:3000
+      API_DECRYPT_PASSWORD: "Hallo"
+      API_SALT: 2025
+      API_CSRF_KEY: "TOP SECRET!!!"
+    volumes:
+      - ./config/:/opt/identman/config
     ports:
       - "5000:5000"
     networks:
@@ -13,10 +21,14 @@ services:
     build:
       context: .
       dockerfile: docker/frontend/Dockerfile
+      args:
+        - REACT_APP_API=http://127.0.0.1:5000
     image: identman-frontend
     ports:
       - "80:80"
       - "443:443"
+    environment:
+      REACT_APP_API: http://identman:5000
     networks:
       - identnet
 
