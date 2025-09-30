@@ -1,23 +1,16 @@
-import os
-
-#from flask import Flask
-#from flask_cors import CORS
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi_csrf_protect import CsrfProtect
+import logging
 
-from identman.helper.settings import settings, Settings
+from identman.helper.settings import settings
 from identman.blueprints import api_router
 
 
 
 
 def create_app():
-    #app = Flask(__name__)
-    #CORS(app, resources={r"/api/*": {"origins": "*"}})
-    print("ENV seen by OS:", os.environ.get("api__kind"))
-
-    app = FastAPI()
+    app = FastAPI(title="Identman API", version="1.0")
     app.include_router(api_router)
     app.add_middleware(
         CORSMiddleware,
@@ -27,9 +20,9 @@ def create_app():
         allow_headers=["*"],
     )
 
+    logging.basicConfig(level=settings.get_loglevel())
+
     @CsrfProtect.load_config
     def get_csrf_config():
         return settings.csrf_settings
-    print(type(settings.api))
-    #app.register_blueprint(bp)
     return app
