@@ -2,10 +2,6 @@ import numbers
 from cryptography.hazmat.primitives import hashes
 import logging
 
-from fastapi import Depends
-
-from fastapi_csrf_protect import CsrfProtect
-
 from identman.helper import settings
 
 logger = logging.getLogger(__name__)

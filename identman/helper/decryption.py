@@ -3,7 +3,6 @@ import json
 from argon2 import PasswordHasher, low_level
 from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 
-
 IV_LENGTH = 12
 SALT_LENGTH = 12
 
@@ -49,9 +48,9 @@ def get_secret_key(password: str, salt: bytes):
     return base64.b64decode(a[-1] + "=")
 
 
-def decrypt(password: str, cipher_message: str) -> str:
+def decrypt(password: str, salt: str, cipher_message: str) -> str:
     decoded_cipher_byte = base64_urlsafe_no_pad_decode(cipher_message)
-    salt = decoded_cipher_byte[:SALT_LENGTH] + b"2025"
+    salt = decoded_cipher_byte[:SALT_LENGTH] + salt.encode()
     iv = decoded_cipher_byte[SALT_LENGTH : (SALT_LENGTH + IV_LENGTH)]
     encrypted_message_byte = decoded_cipher_byte[(IV_LENGTH + SALT_LENGTH) :]
     secret = get_secret_key(password, salt)

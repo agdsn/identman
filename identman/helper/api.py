@@ -28,7 +28,6 @@ class DummyAPI(API):
         self._data = data
 
     def check_user(self, data: dict) -> bool:
-        print(data)
         subset = [value for key, value in data.items()]
         for row in self._data:
             if subset in row:
@@ -41,18 +40,17 @@ class FileAPI(API):
         self.path = path
 
     def check_user(self, data):
-
-        subset = [value for key, value in data.items()]
+        data_list = [value for key, value in data.items()]
         with open(self.path) as file:
             reader = csv.reader(file)
-            for row in reader:
-                if subset in row:
+            for subset in reader:
+                if set(subset).issubset(data_list):
                     return True
             return False
 
 
 
-class PycroftAuthorization(requests.auth.AuthBase):
+class PycroftAuthorization:
     def __init__(self, api_key: str):
         super().__init__()
         self.api_key = api_key
