@@ -87,3 +87,7 @@ pre {
   color: black;
   font-size: 2rem;
 }
+
+.content-container {
+    position: sticky;
+}
