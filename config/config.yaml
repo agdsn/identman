@@ -1,0 +1,3 @@
+api:
+  kind: file
+  path: /opt/identman/config/Ids.csv
