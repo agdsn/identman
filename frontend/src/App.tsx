@@ -1,9 +1,9 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {useSearchParams} from 'react-router-dom';
 import logo from './agdsn_logo_weiß.png';
 import './App.css';
 import './index.css';
-import {getHello, getAdditionalContent, Data, Validated} from './api';
+import {getHello, getAdditionalContent, Data, Validated, setCSRFToken} from './api';
 
 interface LoadingState {
     initialData: boolean;
@@ -20,6 +20,8 @@ interface ErrorState {
 function App() {
     //const location = useLocation();
     //const searchParams = new URLSearchParams(location.search);
+    const hasFetched = useRef(false);
+    console.log("calling App")
       const [searchParams, setSearchParams] = useSearchParams();
 
 
@@ -35,14 +37,14 @@ function App() {
     const [initialData, setInitialData] = useState<any>(null);
     const [additionalContent, setAdditionalContent] = useState<Validated>();
     const query = searchParams.get("query");
-    console.log(query);
     const loadAdditionalContent = async (data: Data) => {
         setLoading(prev => ({ ...prev, additionalContent: true }));
         try {
             console.log(data)
 
-
+            console.log("additionalContent", data);
             const content = await getAdditionalContent(data.query, data.nHash, data.csrfToken);
+            console.log("additionalContent", content);
             console.log(content)
             setAdditionalContent(content);
         } catch (error) {
@@ -56,6 +58,8 @@ function App() {
     };
 
     useEffect(() => {
+        if (hasFetched.current) return; // blockt doppelten Call
+        hasFetched.current = true;
         const initializeData = async () => {
             try {
                 //const query = null;
@@ -64,6 +68,7 @@ function App() {
                 }
                 const data: Data = await getHello(query);
                 setInitialData(data);
+                setCSRFToken(data.signedToken);
                 await loadAdditionalContent(data);
             } catch (error) {
                 setErrors(prev => ({
@@ -97,35 +102,47 @@ function App() {
         return (
 
             <div className="content-container">
-
-                <div className="additional-content">
-
-                    {loading.additionalContent ? (
+                {loading.additionalContent ? (
                         renderLoadingSpinner()
                     ) : errors.contentError ? (
-                        <div className="error">{errors.contentError}</div>
+                        <div className="additional-content">
+                            <div className="error">{errors.contentError}</div>
+                        </div>
                     ) : (
                         additionalContent && (
+
+
+
                             <pre>
                                 {additionalContent.error ? (
+                                    <div className="additional-content">
                                     <pre>
                                         <h2 className="error">Validierung Fehlgschlagen!</h2>
                                         <div>{additionalContent.error}</div>
                                     </pre>
+                                    </div>
                                 ) : (
-                                    <pre>
-                                        <h2 className="validated">Aktives Mitglied der AG DSN:</h2>
-                                        <div className="daten">
-                                            <div>Name: {additionalContent.fname} {additionalContent.name}</div>
-                                            <div>Geburtsjahr: {additionalContent.byear}</div>
-                                            <div>ist nur gültig mit einen Lichtbildausweis!</div>
+                                    <>
+                                        <div className="additional-content">
+                                                <pre>
+                                                    <h2 className="validated">Aktives Mitglied der AG DSN:</h2>
+                                                    <div className="daten">
+                                                        <div>Name: {additionalContent.fname} {additionalContent.name}</div>
+                                                        <div>{additionalContent.byear && (
+                                                            <span>Geburtsjahr: {additionalContent.byear}</span>
+                                                        )}</div>
+
+                                                    </div>
+                                                </pre>
                                         </div>
-                                    </pre>
+                                        <div className="grey">ist nur gültig mit einen Lichtbildausweis!</div>
+                                    </>
                                 )}
                             </pre>
-                        )
-                    )}
-                </div>
+
+
+                )
+                )}
             </div>
         );
     };
