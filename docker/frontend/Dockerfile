@@ -1,16 +1,17 @@
-FROM alpine:3.14 as build
+FROM alpine:3.14 AS build
 RUN apk add --update nodejs npm bash
 
 WORKDIR /opt
 
-COPY --link frontend /opt/identman
 RUN addgroup -S frontend
 RUN adduser -S frontend
-RUN chown -R frontend:frontend identman
 
 USER frontend
-
 WORKDIR /opt/identman
+
+COPY frontend/package.json /opt/identman
+RUN npm install
+COPY frontend /opt/identman
 
 ARG REACT_APP_API
 ENV REACT_APP_API=$REACT_APP_API
