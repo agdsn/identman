@@ -28,13 +28,29 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v4
-
-      # Runs a single command using the runners shell
-      - name: Run a one-line script
-        run: echo Hello, world!
-
-      # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
-        run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
+      - name: Login to GitLab Registry
+          uses: docker/login-action@v3
+          with:
+            registry: registry.agdsn.de
+            username: "github-actions"
+            password: ${{ secrets.GITLAB_REGISTRY_PASSWORD }}
+      - name: Tag built image
+          run: docker tag agdsn/identman-prod:latest registry.agdsn.de/agdsn/coreos/identman/identman:${GITHUB_REF##*/}
+            - name: Push to GitLab registry
+              run: docker push registry.agdsn.de/agdsn/coreos/identman/identman:${GITHUB_REF##*/}
+      - name: Build and push Docker image with build args
+          uses: docker/build-push-action@v6
+          with:
+            context: .
+            file: ./docker/frontend/Dockerfile
+            push: true
+            tags: agdsn/identman-frontend:latest
+            build-args: |
+              - REACT_APP_API=https://ident.agdsn.de:5000
+      - name: Build and push Docker image with build args
+          uses: docker/build-push-action@v6
+          with:
+            context: .
+            file: ./docker/fastapi/Dockerfile
+            push: true
+            tags: agdsn/identman-backend:latest
