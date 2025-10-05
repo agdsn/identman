@@ -42,7 +42,7 @@ jobs:
             context: .
             file: ./docker/frontend/Dockerfile
             push: true
-            tags: registry.agdsn.de/agdsn/coreos/identman-frontend/identman-frontend:${GITHUB_REF##*/}
+            tags: registry.agdsn.de/agdsn/coreos/identman-frontend/identman-frontend:${{ GITHUB_REF##*/ }}
             build-args: |
               - REACT_APP_API=https://ident.agdsn.de:5000
       - name: Build and push Docker image with build args
