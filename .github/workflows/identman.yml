@@ -61,9 +61,9 @@ jobs:
       - name: Login to GitLab Registry
         uses: docker/login-action@v3.6.0
         with:
-            registry: registry.agdsn.de
-            username: "github-actions"
-            password: ${{ secrets.GITLAB_REGISTRY_PASSWORD }}
+            registry: ghcr.io
+            username: ${{ github.actor }}
+            password: ${{ secrets.GITHUB_TOKEN }}
       - name: Build and push Docker image with build args
         uses: docker/build-push-action@v6
         with:
