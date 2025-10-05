@@ -30,6 +30,11 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v4
+      - name: Prepare Docker tag
+        id: vars
+        run: |
+          TAG=$(echo "${GITHUB_REF_NAME}" | tr '/' '-')
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
       - name: Login to GitLab Registry
         uses: docker/login-action@v3.6.0
         with:
@@ -42,7 +47,7 @@ jobs:
             context: .
             file: ./docker/frontend/Dockerfile
             push: true
-            tags: registry.agdsn.de/agdsn/coreos/identman-frontend/identman-frontend:${{ GITHUB_REF##*/ }}
+            tags: registry.agdsn.de/agdsn/coreos/identman-frontend/identman-frontend:${{ steps.vars.outputs.tag }}
             build-args: |
               - REACT_APP_API=https://ident.agdsn.de:5000
       - name: Build and push Docker image with build args
