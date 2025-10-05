@@ -15,3 +15,8 @@ dependencies = [
     "requests>=2.32.5",
     "uvicorn>=0.35.0",
 ]
+[dependency-groups]
+prod = [
+    "uvicorn-worker>=0.4.0",
+    "gunicorn>=23.0.0"
+]
