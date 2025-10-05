@@ -38,25 +38,18 @@ jobs:
       - name: Login to GitLab Registry
         uses: docker/login-action@v3.6.0
         with:
-            registry: registry.agdsn.de
-            username: "github-actions"
-            password: ${{ secrets.GITLAB_REGISTRY_PASSWORD }}
+            registry: ghcr.io
+            username: ${{ github.actor }}
+            password: ${{ secrets.GITHUB_TOKEN }}
       - name: Build and push Docker image with build args
         uses: docker/build-push-action@v6
         with:
             context: .
             file: ./docker/frontend/Dockerfile
             push: true
-            tags: registry.agdsn.de/agdsn/coreos/identman-frontend/identman-frontend:${{ steps.vars.outputs.tag }}
+            tags: ghcr.io/agdsn/identman-frontend:latest
             build-args: |
               - REACT_APP_API=https://ident.agdsn.de:5000
-      - name: Build and push Docker image with build args
-        uses: docker/build-push-action@v6
-        with:
-            context: .
-            file: ./docker/fastapi/Dockerfile
-            push: true
-            tags: agdsn/identman-backend:latest
   docker-backend:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
