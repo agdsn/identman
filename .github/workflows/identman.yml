@@ -20,7 +20,7 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
-  docker:
+  docker-frontend:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
@@ -43,6 +43,27 @@ jobs:
             tags: agdsn/identman-frontend:latest
             build-args: |
               - REACT_APP_API=https://ident.agdsn.de:5000
+      - name: Build and push Docker image with build args
+        uses: docker/build-push-action@v6
+        with:
+            context: .
+            file: ./docker/fastapi/Dockerfile
+            push: true
+            tags: agdsn/identman-backend:latest
+  docker-backend:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v4
+      - name: Login to GitLab Registry
+        uses: docker/login-action@v3.6.0
+        with:
+            registry: registry.agdsn.de
+            username: "github-actions"
+            password: ${{ secrets.GITLAB_REGISTRY_PASSWORD }}
       - name: Build and push Docker image with build args
         uses: docker/build-push-action@v6
         with:
