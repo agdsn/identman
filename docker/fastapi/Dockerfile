@@ -12,8 +12,8 @@ COPY --link pyproject.toml /opt/identman
 
 
 WORKDIR /opt/identman
-RUN uv pip install --system .
+RUN uv pip install --system . --group prod
 COPY --link identman/ /opt/identman/identman
 WORKDIR /opt/identman
 EXPOSE 5000
-CMD ["uvicorn", "identman.main:app", "--host", "0.0.0.0", "--port", "5000"]
+CMD ["gunicorn", "identman.main:app", "-w 4", "-k", "uvicorn_worker.UvicornWorker"]
