@@ -77,4 +77,4 @@ jobs:
             context: .
             file: ./docker/fastapi/Dockerfile
             push: true
-            tags: agdsn/identman-backend:latest
+            tags: ghcr.io/agdsn/identman-backend:latest
