@@ -15,5 +15,5 @@ WORKDIR /opt/identman
 RUN uv pip install --system . --group prod
 COPY --link identman/ /opt/identman/identman
 WORKDIR /opt/identman
-EXPOSE 5000
-CMD ["gunicorn", "identman.main:app", "-w 4", "-k", "uvicorn_worker.UvicornWorker"]
+EXPOSE 8000
+CMD ["gunicorn", "identman.main:app", "-b 0.0.0.0:8000", "-w 4", "-k", "uvicorn_worker.UvicornWorker"]
