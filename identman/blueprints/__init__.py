@@ -21,7 +21,7 @@ api_router = APIRouter(prefix="/api", tags=["items"])
 def index(csrf_protect: CsrfProtect = Depends(), query: str | None = None):
 
     if not query:
-        return JSONResponse(status_code=404, content={})
+        return JSONResponse(status_code=200, content={})
     else:
         csrf_token, signed_token = csrf_protect.generate_csrf_tokens()
         response = {"query": query, "nHash": settings.leading_zeros, "csrfToken": csrf_token, "signedToken": signed_token}
