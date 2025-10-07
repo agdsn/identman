@@ -38,7 +38,7 @@ async def challenge(request: Request, csrf_protect: CsrfProtect = Depends()):
     logger.debug(f"Request data: {request_data}")
 
     try:
-        await csrf_protect.validate_csrf(request, cookie_key="csrfToken")
+        await csrf_protect.validate_csrf(request)
     except CsrfProtectError:
         response = JSONResponse(
             status_code=416, content={"error": "CSRF Error Try again!"}
