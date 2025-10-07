@@ -1,3 +1,4 @@
+import binascii
 from json import JSONDecodeError
 import json
 import logging
@@ -24,8 +25,9 @@ def index(csrf_protect: CsrfProtect = Depends(), query: str | None = None):
         return JSONResponse(status_code=200, content={})
     else:
         csrf_token, signed_token = csrf_protect.generate_csrf_tokens()
-        response = {"query": query, "nHash": settings.leading_zeros, "csrfToken": csrf_token, "signedToken": signed_token}
-        csrf_protect.set_csrf_cookie(signed_token, JSONResponse(status_code=200, content=response))
+        data = {"query": query, "nHash": settings.leading_zeros, "csrfToken": csrf_token, "signedToken": signed_token}
+        response = JSONResponse(status_code=200, content=data)
+        csrf_protect.set_csrf_cookie(signed_token, response)
         return response
 
 
@@ -37,7 +39,7 @@ async def challenge(request: Request, csrf_protect: CsrfProtect = Depends()):
     logger.debug(f"Request data: {request_data}")
 
     try:
-        await csrf_protect.validate_csrf(request, cookie_key="csrfToken")
+        await csrf_protect.validate_csrf(request)
     except CsrfProtectError:
         response = JSONResponse(
             status_code=416, content={"error": "CSRF Error Try again!"}
@@ -60,7 +62,14 @@ async def challenge(request: Request, csrf_protect: CsrfProtect = Depends()):
         response = JSONResponse(status_code=400, content={"error": "Invalider QR Code"})
         csrf_protect.unset_csrf_cookie(response)
         return response
-    logger.debug(f"Decoded data: {data}")
+    except binascii.Error:
+        response = JSONResponse(status_code=400, content={"error": "Invalider QR Code"})
+        csrf_protect.unset_csrf_cookie(response)
+        return response
+    except ValueError:
+        response = JSONResponse(status_code=400, content={"error": "Invalider QR Code"})
+        csrf_protect.unset_csrf_cookie(response)
+        return response
     if api.call(data):
         response = JSONResponse(status_code=200, content=data)
         csrf_protect.unset_csrf_cookie(response)

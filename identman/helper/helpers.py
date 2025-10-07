@@ -2,7 +2,7 @@ import numbers
 from cryptography.hazmat.primitives import hashes
 import logging
 
-from identman.helper import settings
+from .settings import settings
 
 logger = logging.getLogger(__name__)
 
