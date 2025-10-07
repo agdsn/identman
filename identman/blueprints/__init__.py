@@ -1,3 +1,4 @@
+import binascii
 from json import JSONDecodeError
 import json
 import logging
@@ -61,7 +62,10 @@ async def challenge(request: Request, csrf_protect: CsrfProtect = Depends()):
         response = JSONResponse(status_code=400, content={"error": "Invalider QR Code"})
         csrf_protect.unset_csrf_cookie(response)
         return response
-    logger.debug(f"Decoded data: {data}")
+    except binascii.Error:
+        response = JSONResponse(status_code=400, content={"error": "Invalider QR Code"})
+        csrf_protect.unset_csrf_cookie(response)
+        return response
     if api.call(data):
         response = JSONResponse(status_code=200, content=data)
         csrf_protect.unset_csrf_cookie(response)
