@@ -49,7 +49,7 @@ jobs:
             push: true
             tags: ghcr.io/agdsn/identman-frontend:latest
             build-args: |
-                "REACT_APP_API=http://10.130.72.107:8000"
+                "REACT_APP_API=https://ident-api.agdsn.de"
   docker-backend:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
