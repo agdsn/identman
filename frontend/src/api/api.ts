@@ -14,17 +14,10 @@ export interface Validated {
     byear?: number;
 }
 
-const api = process.env.REACT_APP_API || "http://127.0.0.1:5000";
-
-export function setCSRFToken(token: string) {
-    const expireDate = new Date();
-    expireDate.setHours(expireDate.getHours() + 1);
-
-    document.cookie = `csrfToken=${token}; expires=${expireDate.toUTCString()}; path=/; samesite=lax`;
-}
+const api = process.env.REACT_APP_API || "http://127.0.0.1:8000";
 
 export async function getHello(query: string): Promise<Data> {
-    console.log("api: " + api)
+  console.log("api: " + api)
   const response = await fetch(`${api}/api?query=` + query, {
           method: 'GET',
           headers: {
@@ -37,24 +30,11 @@ export async function getHello(query: string): Promise<Data> {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 
-
-  console.log(response);
   return response.json();
-}
-
-function getCookie(name: string) : string {
-    const cookieValue = document.cookie
-        .split("; ")
-        .find(row => row.startsWith(name + "="))
-        ?.split("=");
-    console.log(cookieValue);
-    // @ts-ignore
-    return cookieValue.length > 0 ? cookieValue[1]  : "";
 }
 
 export async function getAdditionalContent(query: string, n: number, csrfToken: string): Promise<Validated> {
     const result = await hashCache(query, n, csrfToken);
-    console.log(result);
     const response = await fetch(`${api}/api/challenge`, {
           method: 'POST',
           headers: {
