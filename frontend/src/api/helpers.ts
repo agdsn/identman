@@ -44,7 +44,6 @@ export async function hashCache(query: string, n: number, csrfToken: string): Pr
         const result = await hashWithSalt(query, csrfToken);
 
         if (result.hash.startsWith(leading_zeros)){
-            console.log(query + " " + csrfToken)
             return {
                 query: query,
                 n: n,

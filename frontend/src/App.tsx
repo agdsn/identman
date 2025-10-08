@@ -3,7 +3,7 @@ import {useSearchParams} from 'react-router-dom';
 import logo from './agdsn_logo_weiß.png';
 import './App.css';
 import './index.css';
-import {getHello, getAdditionalContent, Data, Validated, setCSRFToken} from './api';
+import {getHello, getAdditionalContent, Data, Validated} from './api';
 
 interface LoadingState {
     initialData: boolean;
@@ -40,12 +40,7 @@ function App() {
     const loadAdditionalContent = async (data: Data) => {
         setLoading(prev => ({ ...prev, additionalContent: true }));
         try {
-            console.log(data)
-
-            console.log("additionalContent", data);
             const content = await getAdditionalContent(data.query, data.nHash, data.csrfToken);
-            console.log("additionalContent", content);
-            console.log(content)
             setAdditionalContent(content);
         } catch (error) {
             setErrors(prev => ({
@@ -68,7 +63,6 @@ function App() {
                 }
                 const data: Data = await getHello(query);
                 setInitialData(data);
-                setCSRFToken(data.signedToken);
                 await loadAdditionalContent(data);
             } catch (error) {
                 setErrors(prev => ({
