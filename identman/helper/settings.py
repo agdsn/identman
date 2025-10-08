@@ -30,7 +30,7 @@ class DummyAPISettings(BaseSettings):
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
 
-    cors_origins: List[str] = ["http://localhost", "http://127.0.0.1:3000", "https://ident-api.agdsn.de", "https://ident.agdsn.de"]
+    cors_origins: List[str] = ["http://localhost", "http://127.0.0.1:3000"]
     backend: str = "sample"
     leading_zeros: int = 4
     csrf_settings: CsrfSettings = CsrfSettings()
