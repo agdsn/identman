@@ -10,7 +10,7 @@ from fastapi_csrf_protect.exceptions import CsrfProtectError
 
 from identman.helper.api import api
 from identman.helper.helpers import Query
-from identman.helper.decryption import decrypt
+from identman.helper.decryption import decrypt, Message
 from fastapi import APIRouter, Depends, Request
 from ..helper.settings import settings, secrets
 
@@ -34,11 +34,12 @@ def index(csrf_protect: CsrfProtect = Depends(), query: str | None = None):
 @api_router.post('/challenge')
 async def challenge(request: Request, csrf_protect: CsrfProtect = Depends()):
     request_data = await request.json()
-    query = Query(**request_data)
+
     logger.debug(f"Send Cookie data: {request.cookies}")
     logger.debug(f"Request data: {request_data}")
 
     try:
+        query = Query.validate(request_data)
         await csrf_protect.validate_csrf(request)
     except CsrfProtectError:
         response = JSONResponse(
@@ -46,27 +47,17 @@ async def challenge(request: Request, csrf_protect: CsrfProtect = Depends()):
         )
         csrf_protect.unset_csrf_cookie(response)
         return response
-    if not query.validate():
-
+    except ValueError:
         response = JSONResponse(status_code=416, content={"error": "Nice try!"})
         csrf_protect.unset_csrf_cookie(response)
         return response
     try:
-        plain = decrypt(secrets.secret, secrets.salt, query.get_query())
-        data = json.loads(plain)
-    except JSONDecodeError:
-        response = JSONResponse(status_code=416, content={"error": "Invalider QR Code"})
-        csrf_protect.unset_csrf_cookie(response)
-        return response
-    except InvalidTag:
-        response = JSONResponse(status_code=400, content={"error": "Invalider QR Code"})
-        csrf_protect.unset_csrf_cookie(response)
-        return response
-    except binascii.Error:
-        response = JSONResponse(status_code=400, content={"error": "Invalider QR Code"})
-        csrf_protect.unset_csrf_cookie(response)
-        return response
-    except ValueError:
+        plain = decrypt(secrets.secret, secrets.salt, query.query)
+        logger.debug(f"decrypted String: {plain}")
+        message = Message.validate(json.loads(plain))
+        data = message.model_dump(exclude_none=True)
+    except (JSONDecodeError, InvalidTag, ValueError, binascii.Error) as e:
+        logger.warning(f"Dexryption/Parsing Error: {e}")
         response = JSONResponse(status_code=400, content={"error": "Invalider QR Code"})
         csrf_protect.unset_csrf_cookie(response)
         return response
