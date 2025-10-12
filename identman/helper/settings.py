@@ -4,6 +4,7 @@ import logging
 import yaml
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic import Field
 
 
 class CsrfSettings(BaseSettings):
@@ -17,6 +18,7 @@ class PycroftAPISettings(BaseSettings):
     kind: Literal["pycroft"] = "pycroft"
     url: str
     key: str
+    cert_file: str = ""
 
 class FileAPISettings(BaseSettings):
     kind: Literal["file"] = "file"
@@ -30,7 +32,7 @@ class DummyAPISettings(BaseSettings):
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
 
-    cors_origins: List[str] = ["http://localhost", "http://127.0.0.1:3000"]
+    cors_origins: List[str] = ["http://localhost", "http://127.0.0.1:3000", "http://127.0.0.1"]
     backend: str = "sample"
     leading_zeros: int = 4
     csrf_settings: CsrfSettings = CsrfSettings()

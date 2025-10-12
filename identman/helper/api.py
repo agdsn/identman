@@ -5,6 +5,7 @@ from abc import ABC, abstractmethod
 import csv
 
 from httpx import ConnectError
+import ssl
 
 from .settings import settings, FileAPISettings, DummyAPISettings, PycroftAPISettings
 import httpx
@@ -66,9 +67,13 @@ class PycroftAuthorization:
 
 
 class PycroftAPI(API):
-    def __init__(self, pycroft_url, pycroft_key):
+    def __init__(self, pycroft_url, pycroft_key, cert_file):
         super().__init__(pycroft_url, pycroft_key)
-        self.client = httpx.Client()
+        if cert_file == "":
+            self.client = httpx.Client()
+        else:
+            ctx = ssl.create_default_context(cafile=cert_file)
+            self.client = httpx.Client(verify=ctx)
 
     def check_user(self, user_data: dict):
 
@@ -85,7 +90,7 @@ class PycroftAPI(API):
 def get_api(api: Union[DummyAPISettings, FileAPISettings, PycroftAPISettings]) -> API:
     match api:
         case PycroftAPISettings():
-            return PycroftAPI(api.url, api.key)
+            return PycroftAPI(api.url, api.key, api.cert_file)
         case DummyAPISettings():
             return DummyAPI(api.records)
         case FileAPISettings():
