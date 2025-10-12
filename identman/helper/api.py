@@ -1,8 +1,13 @@
+import logging
 from typing import List, Union
 import requests
 from abc import ABC, abstractmethod
 import csv
+
+from httpx import ConnectError
+
 from .settings import settings, FileAPISettings, DummyAPISettings, PycroftAPISettings
+import httpx
 
 class API(ABC):
     def __init__(self, url: str = "", api_key: str = ""):
@@ -61,18 +66,17 @@ class PycroftAuthorization:
 
 
 class PycroftAPI(API):
-    def __init__(self):
-        super().__init__(settings.pycroft_url, settings.pycroft_key)
-        self.session = requests.Session()
-        self.session.auth = PycroftAuthorization(settings.pycroft_key)
-        
+    def __init__(self, pycroft_url, pycroft_key):
+        super().__init__(pycroft_url, pycroft_key)
+        self.client = httpx.Client()
 
     def check_user(self, user_data: dict):
 
         try:
-            res = self.session.get(self.url, data=user_data)
-        except ConnectionError as e:
-            raise e
+            res = self.client.post(self.url, headers={"authorization": f"apikey { self.key}"}, data=user_data)
+        except (ConnectionError, ConnectError) as e:
+            logging.error(f"Connection error to pycroft API: {e}")
+            return False
 
         if res.status_code != 200:
             return False

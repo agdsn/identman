@@ -1,45 +1,26 @@
 import base64
-import json
+from typing import Optional
+
 from argon2 import PasswordHasher, low_level
 from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+from pydantic import BaseModel, ConfigDict, field_validator
 
 IV_LENGTH = 12
 SALT_LENGTH = 12
 
-class Message:
-    def __init__(self, f_name=None, l_name=None, b_year=None, uid=None, **kwargs):
-        self.f_name = f_name
-        self.l_name = l_name
-        self.b_year = b_year
-        self.uid = uid
-        for key, value in kwargs.items():
-            setattr(self, key, value)
+class Message(BaseModel):
+    model_config = ConfigDict(extra='ignore')
 
-    def validate(self) -> bool:
-        return self.f_name and self.l_name and self.b_year and self.uid
+    name: str
+    fname: str
+    byear: Optional[int] = None
+    uid: int
 
-    def to_dict(self) -> dict | None:
-        if not self.validate():
+    @field_validator('byear', mode='before')
+    def empty_str_to_none(cls, v):
+        if v == "" or v is None:
             return None
-        return {
-            "f_name": self.f_name,
-            "l_name": self.l_name,
-            "b_year": self.b_year,
-            "uid": self.uid
-        }
-
-def get_message(query: str) -> Message | None:
-    text = decrypt("password", query)
-    try:
-        json_dict = json.loads(text)
-        m = Message(**json_dict)
-        if m.validate():
-            return m
-        else:
-            return None
-    except json.JSONDecodeError:
-        return None
-
+        return v
 
 def get_secret_key(password: str, salt: bytes):
     hasher = PasswordHasher(time_cost=10, memory_cost=80, parallelism=10, hash_len=32, type=low_level.Type.ID)
