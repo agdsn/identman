@@ -85,7 +85,7 @@ class PycroftAPI(API):
 
         if res.status_code != 200:
             return False
-        return True
+        return res.json().get("response")
 
 def get_api(api: Union[DummyAPISettings, FileAPISettings, PycroftAPISettings]) -> API:
     match api:
