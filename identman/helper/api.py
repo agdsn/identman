@@ -46,7 +46,7 @@ class FileAPI(API):
         self.path = path
 
     def check_user(self, data):
-        data_list = [value for key, value in data.items()]
+        data_list = [str(value) for key, value in data.items()]
         with open(self.path) as file:
             reader = csv.reader(file)
             for subset in reader:
