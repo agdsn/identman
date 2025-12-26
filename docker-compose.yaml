@@ -11,6 +11,7 @@ services:
       API_CSRF_KEY: "TOP SECRET!!!"
     volumes:
       - ./config/:/opt/identman/config
+      - ./identman:/opt/identman/identman
     ports:
       - "8000:8000"
     networks:
@@ -21,7 +22,7 @@ services:
       context: .
       dockerfile: docker/frontend/Dockerfile
       args:
-        - REACT_APP_API=http://127.0.0.1:8000
+        - VITE_API=http://127.0.0.1:8000
     image: identman-frontend
     ports:
       - "80:80"

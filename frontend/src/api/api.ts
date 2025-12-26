@@ -14,7 +14,7 @@ export interface Validated {
     byear?: number;
 }
 
-const api = process.env.REACT_APP_API || "http://127.0.0.1:8000";
+const api = import.meta.env.VITE_API || "http://127.0.0.1:8000";
 
 export async function getHello(query: string): Promise<Data> {
   console.log("api: " + api)

@@ -1,9 +1,12 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {useSearchParams} from 'react-router-dom';
+import {useSearchParams, Routes, Route} from 'react-router-dom';
 import logo from './agdsn_logo_weiß.png';
 import './App.css';
 import './index.css';
 import {getHello, getAdditionalContent, Data, Validated} from './api';
+import Profil from './Help';
+import i18n from "./translation";
+import {useTranslation} from "react-i18next";
 
 interface LoadingState {
     initialData: boolean;
@@ -16,10 +19,39 @@ interface ErrorState {
 }
 
 
+function LanguageSelector() {
+    const { t, i18n: i18nInstance } = useTranslation();
+  const [selectedLanguage, setSelectedLanguage] = useState('');
+    const changeLanguage = (lng: string) => {
+    i18nInstance.changeLanguage(lng);
+    setSelectedLanguage(lng)
+  };
+
+  useEffect(() => {
+    const browserLanguage = navigator.language.substring(0, 2);
+
+    const initialLanguage: string = browserLanguage != 'de'? "en" : browserLanguage;
+
+    changeLanguage(initialLanguage);
+  }, []);
+
+  const handleLanguageChange = (event: { target: { value: any; }; }) => {
+    const newLanguage = event.target.value;
+    changeLanguage(newLanguage);
+  };
+
+  return (
+    <header className="Language">
+      <select id="language" value={selectedLanguage} onChange={handleLanguageChange}>
+        <option value="de">de</option>
+        <option value="en">en</option>
+      </select>
+    </header>
+  );
+}
 
 function App() {
-    //const location = useLocation();
-    //const searchParams = new URLSearchParams(location.search);
+    const { t, i18n: i18nInstance } = useTranslation();
     const hasFetched = useRef(false);
     console.log("calling App")
       const [searchParams, setSearchParams] = useSearchParams();
@@ -45,7 +77,7 @@ function App() {
         } catch (error) {
             setErrors(prev => ({
                 ...prev,
-                contentError: error instanceof Error ? error.message : 'Ein Fehler ist aufgetreten'
+                contentError: error instanceof Error ? error.message : t("There was an error. Try again later")
             }));
         } finally {
             setLoading(prev => ({ ...prev, additionalContent: false }));
@@ -59,7 +91,7 @@ function App() {
             try {
                 //const query = null;
                 if (!query) {
-                    throw Error("Invalider QR Code");
+                    throw Error(t("Invalid ID!"));
                 }
                 const data: Data = await getHello(query);
                 setInitialData(data);
@@ -67,7 +99,7 @@ function App() {
             } catch (error) {
                 setErrors(prev => ({
                     ...prev,
-                    initialError: error instanceof Error ? error.message : 'Ein Fehler ist aufgetreten'
+                    initialError: error instanceof Error ? error.message : t("There was an error. Try again later")
                 }));
             } finally {
                 setLoading(prev => ({ ...prev, initialData: false }));
@@ -80,7 +112,7 @@ function App() {
     const renderLoadingSpinner = () => (
         <div className="loader-container">
             <div className="loader"></div>
-            <p>Laden...</p>
+            <p>{t("loading...")}</p>
         </div>
     );
 
@@ -111,7 +143,7 @@ function App() {
                                 {additionalContent.error ? (
                                     <div className="additional-content">
                                     <pre>
-                                        <h2 className="error">Validierung Fehlgschlagen!</h2>
+                                        <h2 className="error">{t("Validation failed!")}</h2>
                                         <div>{additionalContent.error}</div>
                                     </pre>
                                     </div>
@@ -119,38 +151,39 @@ function App() {
                                     <>
                                         <div className="additional-content">
                                                 <pre>
-                                                    <h2 className="validated">Aktives Mitglied der AG DSN:</h2>
+                                                    <h2 className="validated">{t('Valid id of active AG DSN member:')}</h2>
                                                     <div className="daten">
-                                                        <div>Name: {additionalContent.fname} {additionalContent.name}</div>
+                                                        <div>{t('Name:')} {additionalContent.fname} {additionalContent.name}</div>
                                                         <div>{additionalContent.byear && (
-                                                            <span>Geburtsjahr: {additionalContent.byear}</span>
+                                                            <span>{t('Birth year:')} {additionalContent.byear}</span>
                                                         )}</div>
 
                                                     </div>
                                                 </pre>
                                         </div>
-                                        <div className="grey">ist nur gültig mit einen Lichtbildausweis!</div>
+                                        <div className="grey">{t('Just valid with ID!')}</div>
                                     </>
                                 )}
                             </pre>
-
-
                 )
                 )}
             </div>
         );
     };
+  const [currentLanguage, setCurrentLanguage] = useState(i18n.language);
+  /*const handleLanguageChange = () => {
+    const nextLanguage = this. === 'en' ? 'de' : 'en';
+    i18n.changeLanguage(nextLanguage);
+    setCurrentLanguage(nextLanguage);
+  };*/
   return (
     <div className="App background-container">
     <div className="blur-overlay">
-      <header className="App-header">
+        {LanguageSelector()}
+      <div className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
-
-
-
-              {renderContent()}
-
-      </header>
+          {query? renderContent(): Profil()}
+      </div>
     </div>
       </div>
   );
