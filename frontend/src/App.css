@@ -29,7 +29,19 @@
   border-radius: 1em;
   padding-top: 1em;
   box-sizing: border-box;
+  overflow: hidden;
+}
 
+.Language {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 10px;
+}
+
+#language {
+  background: none;
+  border: none;
 }
 
 .App-link {
@@ -48,7 +60,7 @@
 .background-container {
   position: relative;
   height: 100vh;
-  background-image: url('../public/wu.jpg');
+  background-image: url('/wu.jpg');
   background-size: cover;
   background-position: center;
 }
