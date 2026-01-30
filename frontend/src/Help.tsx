@@ -18,7 +18,7 @@ export default function Profil() {
 
         <p>{t('We are maintaining and ensuring the development of the network in the dormitories of the Studentenwerk Dresden.')}</p>
         <p>{t('This application serve the identification of active participating in the AG DSN.')}</p>
-        <p>{t('Thorougher information\'s can be found on')} <a href="https://www.studentenwerk-dresden.de/wohnen/internet.html">{t('Studentenwerk Dresden')}</a></p>
+        <p>{t('Thorougher information\'s can be found on')} <a className="link" href="https://www.studentenwerk-dresden.de/wohnen/internet.html">{t('Studentenwerk Dresden')}</a></p>
     </div>
   );
 }

@@ -53,8 +53,7 @@ function LanguageSelector() {
 function App() {
     const { t, i18n: i18nInstance } = useTranslation();
     const hasFetched = useRef(false);
-    console.log("calling App")
-      const [searchParams, setSearchParams] = useSearchParams();
+    const [searchParams, setSearchParams] = useSearchParams();
 
 
 
@@ -126,8 +125,7 @@ function App() {
         }
 
         return (
-
-            <div className="content-container">
+                <div>
                 {loading.additionalContent ? (
                         renderLoadingSpinner()
                     ) : errors.contentError ? (
@@ -167,25 +165,23 @@ function App() {
                             </pre>
                 )
                 )}
-            </div>
+</div>
         );
     };
   const [currentLanguage, setCurrentLanguage] = useState(i18n.language);
-  /*const handleLanguageChange = () => {
-    const nextLanguage = this. === 'en' ? 'de' : 'en';
-    i18n.changeLanguage(nextLanguage);
-    setCurrentLanguage(nextLanguage);
-  };*/
   return (
-    <div className="App background-container">
-    <div className="blur-overlay">
+    <div>
         {LanguageSelector()}
       <div className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-          {query? renderContent(): Profil()}
+          <div>
+            <img src={logo} className="App-logo" alt="logo" />
+          </div>
+          <div className="content-container">
+                {query? renderContent(): Profil()}
+          </div>
+
       </div>
     </div>
-      </div>
   );
 }
 
