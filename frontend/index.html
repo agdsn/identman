@@ -28,13 +28,24 @@
     <title>Ident</title>
   </head>
   <body>
-<div class="App background-container">
+    <div class="App background-container">
     <div class="blur-overlay">
-    <div id="root"></div>
-      <noscript>You need to enable JavaScript to run this app.</noscript>
-          <noscript>Um diese Anwendung zunutzen muss JavaScript aktiviert sein.</noscript>
+        <div id="lang"></div>
+        <div class="App-header">
+          <div class="image-container">
+            <img src="/src/agdsn_logo_weiß.png" class="App-logo" alt="AG DSN" />
+          </div>
+          <div id="root"></div>
+        </div>
+
+        <noscript>
+            <center>
+                <p><strong>You need to enable JavaScript to run this app.</strong></p>
+                <p><strong>Um diese Anwendung zu nutzen, muss JavaScript aktiviert sein.</strong></p>
+            </center>
+        </noscript>
+      </div>
     </div>
-</div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

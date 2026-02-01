@@ -6,16 +6,20 @@
 }
 
 .App-logo {
-  width: 19em;
-  height: auto;
+  height: 10vh;
+  width: auto;
+  top: 3em;
   pointer-events: none;
   position: absolute;
-  top: 0.2em;
-  left: 50%;
   transform: translateX(-50%);
-  z-index: 1000;
-  padding: 2em;
 
+
+}
+
+.image-container {
+  top: 1em;
+  align-content: center;
+  padding-bottom: 0.3em;
 }
 
 .App-header {
@@ -26,7 +30,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
+  font-size: calc(1.5vh + 2vmin);
   color: white;
   background-color: #282c34;
   border-radius: 1em;
@@ -36,10 +40,13 @@
 }
 
 .Language {
-  position: absolute;
+  position: fixed;
+  display: flex;
+  justify-content: flex-end;
   top: 0;
   right: 0;
-  padding: 10px;
+  padding-left: 2em;
+  padding-right: 2em;
 }
 
 #language {
@@ -104,12 +111,11 @@ pre {
 }
 
 
-  .content-container {
-    top: 1em;
-    position: static;
-    padding: 1em;
-    overflow: auto;
-  }
+.content-container {
+  position: static;
+  padding: 1em;
+  overflow: auto;
+}
 
 .link{
   text-shadow: 0.2em 0.2em 0.5em rgba(0, 0, 0, 0.4);

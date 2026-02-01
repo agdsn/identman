@@ -17,20 +17,19 @@ export interface Validated {
 const api = import.meta.env.VITE_API || "http://127.0.0.1:8000";
 
 export async function getHello(query: string): Promise<Data> {
-  console.log("api: " + api)
-  const response = await fetch(`${api}/api?query=` + query, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-      credentials: "include"
-        }
-    );
-  if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
+      const response = await fetch(`${api}/api?query=` + query, {
+              method: 'GET',
+              headers: {
+                  'Content-Type': 'application/json',
+              },
+              credentials: "include"
+          }
+      )
+      if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return response.json();
 
-  return response.json();
 }
 
 export async function getAdditionalContent(query: string, n: number, csrfToken: string): Promise<Validated> {

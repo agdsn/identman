@@ -16,9 +16,9 @@ export default function Profil() {
     <div>
       <h2>{t("AG DSN ident")}</h2>
 
-        <p>{t('We are maintaining and ensuring the development of the network in the dormitories of the Studentenwerk Dresden.')}</p>
-        <p>{t('This application serve the identification of active participating in the AG DSN.')}</p>
-        <p>{t('Thorougher information\'s can be found on')} <a className="link" href="https://www.studentenwerk-dresden.de/wohnen/internet.html">{t('Studentenwerk Dresden')}</a></p>
+        <p>{t('We are responsible for maintaining and developing the network in the dormitories of Studentenwerk Dresden.')}</p>
+        <p>{t('This application helps identify active AG DSN members.')}</p>
+        <p>{t('Further information is available at')} <a className="link" href="https://www.studentenwerk-dresden.de/wohnen/internet.html">{t('Studentenwerk Dresden')}</a></p>
     </div>
   );
 }

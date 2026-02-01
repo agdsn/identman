@@ -1,15 +1,17 @@
 {
   "AG DSN ident": "AG DSN ident",
-  "This application serve the identification of active participating in the AG DSN.": "This application serve the identification of active participating in the AG DSN.",
-  "We are maintaining and ensuring the development of the network in the dormitories of the Studentenwerk Dresden.": "We are maintaining and ensuring the development of the network in the dormitories of the Studentenwerk Dresden.",
-  "Thorougher information's can be found on": "Thorougher information's can be found on",
+  "This application helps identify active AG DSN members.": "This application helps identify active AG DSN members.",
+  "We are responsible for maintaining and developing the network in the dormitories of Studentenwerk Dresden.": "We are maintaining and ensuring the development of the network in the dormitories of the Studentenwerk Dresden.",
+  "Further information is available at": "Further information is available at",
   "Studentenwerk Dresden": "Studentenwerk Dresden",
-  "Just valid with ID!": "Just valid with ID!",
-  "Valid id of active AG DSN member:": "Valid id of active AG DSN member:",
+  "Valid only with ID.": "Valid only with ID.",
+  "Valid AG DSN member ID:": "Valid AG DSN member ID",
   "Birth year:": "Birth year:",
   "Name:": "Name:",
   "Validation failed!": "Validation failed!",
   "Invalid ID!": "Invalid ID!",
-  "There was an error. Try again later": "There was an error. Try again later",
-  "loading...": "loading..."
+  "Something went wrong. Please try again later.": "Something went wrong. Please try again later.",
+  "loading...": "loading...",
+  "There was an error in our system, please try again later!": "There was an error in our system, please try again later!",
+  "Owned by:": "Owned by:"
 }
