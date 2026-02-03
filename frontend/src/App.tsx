@@ -1,6 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {useSearchParams, Routes, Route} from 'react-router-dom';
-import logo from './agdsn_logo_weiß.png';
+import {useSearchParams} from 'react-router-dom';
 import './App.css';
 import './index.css';
 import {getHello, getAdditionalContent, Data, Validated} from './api';
@@ -18,43 +17,10 @@ interface ErrorState {
     contentError: string | null;
 }
 
-
-function LanguageSelector() {
-    const { t, i18n: i18nInstance } = useTranslation();
-  const [selectedLanguage, setSelectedLanguage] = useState('');
-    const changeLanguage = (lng: string) => {
-    i18nInstance.changeLanguage(lng);
-    setSelectedLanguage(lng)
-  };
-
-  useEffect(() => {
-    const browserLanguage = navigator.language.substring(0, 2);
-
-    const initialLanguage: string = browserLanguage != 'de'? "en" : browserLanguage;
-
-    changeLanguage(initialLanguage);
-  }, []);
-
-  const handleLanguageChange = (event: { target: { value: any; }; }) => {
-    const newLanguage = event.target.value;
-    changeLanguage(newLanguage);
-  };
-
-  return (
-    <header className="Language">
-      <select id="language" value={selectedLanguage} onChange={handleLanguageChange}>
-        <option value="de">de</option>
-        <option value="en">en</option>
-      </select>
-    </header>
-  );
-}
-
 function App() {
     const { t, i18n: i18nInstance } = useTranslation();
     const hasFetched = useRef(false);
-    console.log("calling App")
-      const [searchParams, setSearchParams] = useSearchParams();
+    const [searchParams, _] = useSearchParams();
 
 
 
@@ -99,7 +65,7 @@ function App() {
             } catch (error) {
                 setErrors(prev => ({
                     ...prev,
-                    initialError: error instanceof Error ? error.message : t("There was an error. Try again later")
+                    initialError:  t("There was an error in our system, please try again later!")
                 }));
             } finally {
                 setLoading(prev => ({ ...prev, initialData: false }));
@@ -126,8 +92,7 @@ function App() {
         }
 
         return (
-
-            <div className="content-container">
+                <div>
                 {loading.additionalContent ? (
                         renderLoadingSpinner()
                     ) : errors.contentError ? (
@@ -151,9 +116,9 @@ function App() {
                                     <>
                                         <div className="additional-content">
                                                 <pre>
-                                                    <h2 className="validated">{t('Valid id of active AG DSN member:')}</h2>
+                                                    <h2 className="validated">{t('Valid AG DSN member ID:')}</h2>
                                                     <div className="daten">
-                                                        <div>{t('Name:')} {additionalContent.fname} {additionalContent.name}</div>
+                                                        <div>{t('Owned by:')} {additionalContent.fname} {additionalContent.name}</div>
                                                         <div>{additionalContent.byear && (
                                                             <span>{t('Birth year:')} {additionalContent.byear}</span>
                                                         )}</div>
@@ -161,31 +126,21 @@ function App() {
                                                     </div>
                                                 </pre>
                                         </div>
-                                        <div className="grey">{t('Just valid with ID!')}</div>
+                                        <div className="grey">{t('Valid only with ID.')}</div>
                                     </>
                                 )}
                             </pre>
                 )
                 )}
-            </div>
+</div>
         );
     };
   const [currentLanguage, setCurrentLanguage] = useState(i18n.language);
-  /*const handleLanguageChange = () => {
-    const nextLanguage = this. === 'en' ? 'de' : 'en';
-    i18n.changeLanguage(nextLanguage);
-    setCurrentLanguage(nextLanguage);
-  };*/
   return (
-    <div className="App background-container">
-    <div className="blur-overlay">
-        {LanguageSelector()}
-      <div className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-          {query? renderContent(): Profil()}
-      </div>
-    </div>
-      </div>
+
+          <div className="content-container">
+                {query? renderContent(): Profil()}
+          </div>
   );
 }
 

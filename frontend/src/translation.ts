@@ -5,8 +5,8 @@ import translationEN from './locales/en.json';
 import translationDE from './locales/de.json';
 
 i18n
-  .use(LanguageDetector) // Optional: Automatische Spracherkennung
-  .use(initReactI18next) // Binden an React
+  .use(LanguageDetector)
+  .use(initReactI18next)
   .init({
     resources: {
       en: {
@@ -16,10 +16,10 @@ i18n
         translation: translationDE,
       },
     },
-    lng: 'en', // Standardsprache
-    fallbackLng: 'en', // Falls eine Übersetzung fehlt
+    lng: 'en',
+    fallbackLng: 'en',
     interpolation: {
-      escapeValue: false, // XSS-Schutz: In der Regel auf 'true' setzen, aber für Testzwecke oft deaktiviert
+      escapeValue: false,
     },
   });
 
