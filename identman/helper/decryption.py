@@ -14,7 +14,7 @@ class Message(BaseModel):
     name: str
     fname: str
     byear: Optional[int] = None
-    uid: int
+    uid: str
 
     @field_validator('byear', mode='before')
     def empty_str_to_none(cls, v):

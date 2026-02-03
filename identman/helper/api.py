@@ -10,6 +10,8 @@ import ssl
 from .settings import settings, FileAPISettings, DummyAPISettings, PycroftAPISettings
 import httpx
 
+logger = logging.getLogger(__name__)
+
 class API(ABC):
     def __init__(self, url: str = "", api_key: str = ""):
         self.url = url
@@ -48,9 +50,10 @@ class FileAPI(API):
     def check_user(self, data):
         data_list = [str(value) for key, value in data.items()]
         with open(self.path) as file:
-            reader = csv.reader(file)
-            for subset in reader:
-                if set(subset).issubset(data_list):
+            user_list = csv.reader(file)
+            for user in user_list:
+                if set(data_list).issubset(user):
+                    logger.info(f"Found user: {user} which matches {data_list}")
                     return True
             return False
 

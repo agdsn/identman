@@ -6,6 +6,8 @@ import yaml
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
+logger = logging.getLogger(__name__)
+
 class CsrfSettings(BaseSettings):
   secret_key: str = "Top secret"
   cookie_samesite: str = "none"
@@ -31,7 +33,7 @@ class DummyAPISettings(BaseSettings):
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
 
-    cors_origins: List[str] = ["http://localhost", "http://127.0.0.1:3000", "http://127.0.0.1", "https://127.0.0.1"]
+    cors_origins: List[str] = ["http://localhost", "http://127.0.0.1:3000", "http://localhost:5173", "http://127.0.0.1:5173", "http://127.0.0.1", "https://127.0.0.1"]
     backend: str = "sample"
     leading_zeros: int = 4
     csrf_settings: CsrfSettings = CsrfSettings()
@@ -50,14 +52,16 @@ class Settings(BaseSettings):
 
 class Secrets(BaseSettings):
     secret: str = "Hallo"
-    salt: str = "2025"
+    salt: str = "2026"
     csrf_key: str = "Top secret"
 
 
 if not os.getenv("CONFIG"):
     settings = Settings()
     secrets = Secrets()
+    logger.warning(f"Using default config with decryption secret: {secrets.secret} and salt: {secrets.salt}!")
 else:
+    logger.info("Loading config from envs!")
     secrets = Secrets(
         secret=os.getenv("API_DECRYPT_PASSWORD"),
         salt=os.getenv("API_SALT"),
