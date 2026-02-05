@@ -1,4 +1,3 @@
-import numbers
 from cryptography.hazmat.primitives import hashes
 import logging
 

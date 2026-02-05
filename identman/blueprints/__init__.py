@@ -57,8 +57,13 @@ async def challenge(request: Request, csrf_protect: CsrfProtect = Depends()):
         logger.debug(f"decrypted String: {plain}")
         message = Message.validate(json.loads(plain))
         data = message.model_dump(exclude_none=True)
-    except (JSONDecodeError, InvalidTag, ValueError, binascii.Error, argon2.exceptions.HashingError) as e:
-        logger.warning(f"Dexryption/Parsing Error: {e}")
+    except (JSONDecodeError, ValueError) as e:
+        logger.debug(f"Decode Error: {e}")
+        response = JSONResponse(status_code=400, content={"error": "Invalider QR Code"})
+        csrf_protect.unset_csrf_cookie(response)
+        return response
+    except (InvalidTag, argon2.exceptions.HashingError) as e:
+        logger.warning(f"Decryption Error: {e}")
         response = JSONResponse(status_code=400, content={"error": "Invalider QR Code"})
         csrf_protect.unset_csrf_cookie(response)
         return response
