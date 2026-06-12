@@ -1,6 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {useSearchParams} from 'react-router-dom';
-import './App.css';
 import './index.css';
 import {getHello, getAdditionalContent, Data, Validated} from './api';
 import Profil from './Help';
