@@ -16,6 +16,9 @@ COPY frontend /opt/identman
 ARG VITE_API
 ENV VITE_API=$VITE_API
 
+ARG VITE_LEGAL_END
+ENV VITE_LEGAL_END=$VITE_LEGAL_END
+
 RUN npm run build
 
 FROM nginx:alpine
