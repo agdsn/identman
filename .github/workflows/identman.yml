@@ -47,7 +47,9 @@ jobs:
             context: .
             file: ./docker/frontend/Dockerfile
             push: true
-            tags: ghcr.io/agdsn/identman-frontend:latest
+            tags: |
+              ghcr.io/agdsn/identman-frontend:latest
+              ghcr.io/agdsn/identman-backend:v1.${{ github.run_number }}
             build-args: |
                 "VITE_API=https://ident-api.agdsn.de",
                 "VITE_LEGAL_END=https://agdsn.de/sipa/pages/legal/impressum"
